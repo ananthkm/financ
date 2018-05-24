@@ -1,0 +1,163 @@
+package serve;
+
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.util.List;
+
+import javax.persistence.Query;
+import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.hibernate.Session;
+import org.web.model.Item;
+import org.web.util.HBUtil;
+
+/**
+ * Servlet implementation class ViewItems
+ */
+@WebServlet("/ViewLoan")
+public class ViewLoanServelet extends HttpServlet {
+	private static final long serialVersionUID = 1L;
+
+	/**
+	 * @see HttpServlet#HttpServlet()
+	 */
+
+	public ViewLoanServelet() {
+		super();
+		// TODO Auto-generated constructor stub
+	}
+
+	/**
+	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse
+	 *      response)
+	 */
+	protected void doGet(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
+		response.setContentType("text/html");
+		try (PrintWriter out = response.getWriter()) {
+			response.setContentType("text/html");
+			session session = HBUtil.get().openSession();
+			session.beginTransaction();
+			out.println("<html>");
+			out.println("<head>");
+			out.println("<style>\r\n" + 
+					"body {\r\n" + 
+					"	background-repeat: no-repeat;\r\n" + 
+					"	background-size: 100% 100%;\r\n" + 
+					"}\r\n" + 
+					"</style>\r\n" + 
+					"");
+			out.println("<meta charset=ISO-8859-1>");
+			out.println(
+					"<link rel=\"stylesheet\" href=css/bootstrap.min.css> <link rel=\"stylesheet\" href=css/bootstrap.css>");
+			out.println("<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\r\n"
+					+ "  <link rel=\"stylesheet\" href=\"style/css/bootstrap.min.css\">\r\n"
+					+ "  <script src=\"style/jquery/jquery.min.js\"></script>\r\n"
+					+ "  <script src=\"style/js/bootstrap.min.js\"></script>\r\n"
+					+ "");
+			out.println("<title>Insert title here</title>");
+			out.println("</head>");
+			out.println("<body background=\"a21.PNG\">");
+			out.println("<nav class=\"navbar navbar-inverse\">\r\n" + "  <div class=\"container-fluid\">\r\n"
+					+ "    <div class=\"navbar-header\">\r\n"
+					+ "      <a class=\"navbar-brand\" href=\"#\">Restaurant Management</a>\r\n" + "    </div>\r\n"
+					+ "    <ul class=\"nav navbar-nav\">\r\n"
+					+ "     </ul>\r\n"
+					+ "    <ul class=\"nav navbar-nav navbar-right\">\r\n" 
+					+ "      <li class=\"dropdown\"><a class=\"dropdown-toggle\" data-toggle=\"dropdown\" href=\"#\">User</a>\r\n"
+					+ "        <ul class=\"dropdown-menu\">\r\n"
+					+ "          <li><a href=\"profile.html\">Edit Profile</a></li>\r\n"
+					+ "          <li><a href=\"logout\">Logout</a></li>\r\n"
+					+ "          <!--  <li><a href=\"#\">Page 1-3</a></li>-->\r\n" + "        </ul>\r\n"
+					+ "      </li>\r\n" + "      \r\n" + "    </ul>\r\n" + "  </div>\r\n" + "</nav>\r\n" + "");
+
+			int page = 1;
+			if (request.getParameter("page") != null)
+				page = Integer.parseInt(request.getParameter("page"));
+			Query query = session.createQuery("from Item");
+			List<loan> person = (List<loan>) query.getResultList();
+			int size = person.size();
+			System.out.println(size);
+			query = session.createQuery("from loan");
+			query.setFirstResult((page - 1) * 10);
+			query.setMaxResults(page * 10);
+			List<loan> item_all = (List<loan>) query.getResultList();
+
+			out.println("<div class=container><div class=container-fluid-center><div class=row>");
+			out.println("<div class=col></div><div class=col>");
+
+			out.println("<div class=col>");
+			out.println("</div>");
+			out.println("</div></div>");
+			int k = ((size - 1) / 10) + 1;
+			out.println("<nav aria-label=...>" + "<ul class=pagination pagination-lg>" + "<li class=page-item disabled>"
+					+ "</li>");
+			out.println("<ul class=pagination justify-content-center>");
+			for (int i = 1; i <= k; i++) {
+				out.println(
+						"<li class=page-item active><a class=page-link href=view?page=" + i + ">" + i + "</a></li>");
+
+			}
+			out.println(" </ul>");
+			out.println("<li class=page-item>" + "</li>" + "</ul>" + "</nav>");
+			out.println("</div></div>");
+			out.println("</div></body>");
+			out.println("</html>");
+			out.println("<div class=row style=\"margin-left:250px;\">");
+			out.println("<form action=\"order\" method=get>");
+			out.println("<table class=table>");
+			out.println("<thead>");
+			out.println("<tr>");
+			out.println("<th scope=col></th>");
+			out.println("<th scope=col>item</th>");
+			out.println("<th scope=col>Price</th>");
+			out.println("<th scope=col>category</th>");
+			out.println("<th scope=col>Quantity</th>");
+			out.println("</tr>");
+			out.println("</thead>");
+			for (Loan each : Loan_all) {
+				out.println("<tbody>");
+				out.println("<tr>");
+
+				out.println("<td height=\"100\"><input type=checkbox name=checked value=" + each.getID()
+						+ "  style=\"border:none; text-align:center\"></td>");
+
+				out.println(
+						"<td height=\"100\"><input type=text name=Name readonly=\"readonly\" onfocus=\"this.blur();\" tabindex=\"-1\" class=\"disabledInput\" value=" + each.getType() + "  style=border:none;></td>");
+				out.println(
+						"<td height=\"100\"><input type=text readonly=\"readonly\" onfocus=\"this.blur();\" tabindex=\"-1\" class=\"disabledInput\" name=prize value=" + each.getAmount() + "  style=border:none;></td>");
+				out.println("<td height=\"100\"><input type=text readonly=\"readonly\" onfocus=\"this.blur();\" tabindex=\"-1\" class=\"disabledInput\" name=category value=" + each.getYearoftarnsaction()
+						+ "  style=border:none;></td>");
+
+				out.println("<td height=\"100\"><input type=text readonly=\"readonly\" onfocus=\"this.blur();\" tabindex=\"-1\" class=\"disabledInput\" name=category value=" + each.getEndtime()
+						+ "  style=border:none;></td>");
+				out.println("<td height=\"100\"><input type=text readonly=\"readonly\" onfocus=\"this.blur();\" tabindex=\"-1\" class=\"disabledInput\" name=category value=" + each.Status()
+				+ "  style=border:none;></td>");
+				out.println("<td height=\"100\"><input type=text name=Quantity placeholder=Quantitys style=border:none;><br></td>");
+				out.println("</tr>");
+				out.println("</tbody>");
+
+			}
+			out.println("</table>");
+			
+			out.println("<div class=\"row\">");
+			out.println("<div class=\"col\"></div>");
+			out.println("<div class=\"col\" align=\"center\">");
+			out.println("<input type=submit name=button value=Order class=\"btn btn-primary\">");
+			out.println("</div>");
+			out.println("<div class=\"col\" ></div>");
+			out.println("</div>");
+			out.println("</form>");
+			
+			session.getTransaction().commit();
+			session.close();
+
+		}
+
+	}
+
+}
